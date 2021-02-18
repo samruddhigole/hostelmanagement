@@ -13,6 +13,8 @@ migrate = Migrate(app,db)
 
 FlaskSerializeMixin.db = db
 
+#OPERATIONS for ROOMS
+
 @app.route("/rooms",methods=["POST"])
 def create_room():
     if request.method == 'POST':
@@ -25,6 +27,30 @@ def create_room():
         else:
             return {"result":"not updated"}
 
+@app.route("/rooms",methods=["GET"])
+def get_all_rooms():
+    rooms = Rooms.query.all()
+    result = [
+            {
+                "id":room.id,
+                "studentcount":room.studentcount,
+                "capacity":room.capacity
+                }
+            for room in rooms]
+    return {"count":len(result),"rooms":result}
+
+@app.route("/rooms/<int:id>",methods=["GET"])
+def get_room_by_id(id):
+    rooms = Rooms.query.get_or_404(id)
+
+    result ={
+                "id":rooms.id,
+                "studentcount":rooms.studentcount,
+                "capacity":rooms.capacity
+                }
+    return {"result":result}
+
+#OPERATIONS for STUDENTS
 
 @app.route("/students",methods=["POST"])
 def add_student():
@@ -47,6 +73,45 @@ def add_student():
                 return {"result":"Successfully added new student"}, 201
             else:
                 return {"result":"Free rooms are not found"}, 404
+
+def update_room_data(id,operation):
+    room=Rooms.query.get_or_404(id)
+    if operation == "add":
+        print("B",room.studentcount)
+        room.studentcount+=1
+        print("A",room.studentcount)
+
+    if operation == "delete":
+        print("B",room.studentcount)
+        room.studentcount-=1
+        print("A",room.studentcount)
+    db.session.add(room)
+    db.session.commit()
+
+@app.route("/students",methods=["GET"])
+def get_all_students():
+    students = Students.query.all()
+
+    result = [
+            {
+                "id":student.id,
+                "studname":student.studname,
+                "roomid":student.roomid
+                }
+            for student in students]
+    return {"result":result},200
+
+
+@app.route("/students/id/<int:id>",methods=["GET"])
+def get_student_by_id(id):
+    student = Students.query.get_or_404(id)
+
+    result = {
+            "id":student.id,
+            "studname":student.studname,
+            "roomid":student.roomid
+            }
+    return {"result":result},200
 
 
 class Rooms(FlaskSerializeMixin,db.Model):
