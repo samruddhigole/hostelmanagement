@@ -13,6 +13,42 @@ migrate = Migrate(app,db)
 
 FlaskSerializeMixin.db = db
 
+@app.route("/rooms",methods=["POST"])
+def create_room():
+    if request.method == 'POST':
+        if request.is_json:
+            data = request.get_json()
+            new_room = Rooms(studentcount=data['studentcount'],capacity=data['capacity'])
+            db.session.add(new_room)
+            db.session.commit()
+            return {"result":"Record is created successfully"}, 201
+        else:
+            return {"result":"not updated"}
+
+
+@app.route("/students",methods=["POST"])
+def add_student():
+    if request.method == "POST":
+        if request.is_json:
+            data = request.get_json()
+            roomData = get_room_free_allocation()
+            print(roomData)
+            roomfound=0
+            for room in roomData['freeallocation']:
+                if (room['freeallocation']>0):
+                    roomfound=1
+                    roomid = room['id']
+                    break
+            if roomfound == 1:
+                update_room_data(roomid,"add")
+                new_student = Students(studname=data['studname'],roomid=roomid)
+                db.session.add(new_student)
+                db.session.commit()
+                return {"result":"Successfully added new student"}, 201
+            else:
+                return {"result":"Free rooms are not found"}, 404
+
+
 class Rooms(FlaskSerializeMixin,db.Model):
     __tablename__ = 'room'
     id = db.Column(db.Integer, primary_key=True)
