@@ -88,6 +88,22 @@ def delete_room_by_id(id):
     return {"result":"Record deleted successfully"}
 
 
+@app.route("/rooms/freeallocation",methods=["GET"])
+def get_room_free_allocation():
+    rooms = Rooms.query.all()
+    result=[]
+    for room in rooms:
+        ca = room.capacity
+        sc = room.studentcount
+        freeallocation = ca - sc
+        result.append(
+                {
+            "id":room.id,
+            "capacity":room.capacity,
+            "freeallocation":freeallocation
+            })
+
+    return {"freeallocation":result}
 #OPERATIONS for STUDENTS
 
 @app.route("/students",methods=["POST"])
