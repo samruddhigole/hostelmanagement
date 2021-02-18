@@ -104,8 +104,8 @@ def get_room_free_allocation():
             })
 
     return {"freeallocation":result}
-#OPERATIONS for STUDENTS
 
+#OPERATIONS for STUDENTS
 @app.route("/students",methods=["POST"])
 def add_student():
     if request.method == "POST":
@@ -167,6 +167,22 @@ def get_student_by_id(id):
             }
     return {"result":result},200
 
+#get students detail using room id
+@app.route("/roomwisestudent/<int:id>")
+def get_student_byroom_id(id):
+    room = Rooms.query.get_or_404(id)
+    students = Students.query.all()
+    result=[]
+    for student in students:
+        if room.id == student.roomid:
+            result.append(
+                    {
+                    "id":student.id,
+                    "studentname":student.studname,
+                    "roomid":student.roomid
+                    })
+    return {"result":result}
+
 @app.route("/students/<int:id>",methods=["PUT"])
 def update_student_byid(id):
 
@@ -187,7 +203,6 @@ def delete_student_by_id(id):
     db.session.commit()
     return {"result":"Student Deleted successfully"} , 200
 
-
 class Rooms(FlaskSerializeMixin,db.Model):
     __tablename__ = 'room'
     id = db.Column(db.Integer, primary_key=True)
@@ -201,7 +216,6 @@ class Rooms(FlaskSerializeMixin,db.Model):
     def __init__(self,studentcount,capacity):
         self.studentcount = studentcount
         self.capacity = capacity
-
 
 class Students(FlaskSerializeMixin,db.Model):
     __tablename__ = 'student'
@@ -219,11 +233,8 @@ class Students(FlaskSerializeMixin,db.Model):
         self.studname = studname
         self.roomid = roomid
 
-
-
 db.create_all()
 db.session.commit()
-
 
 if __name__ == "__main__":
     app.run(debug=True,host='0.0.0.0',port=8080)
