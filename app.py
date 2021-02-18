@@ -1,4 +1,3 @@
-
 from flask import Flask, render_template, request, jsonify, json
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
@@ -13,8 +12,26 @@ migrate = Migrate(app,db)
 
 FlaskSerializeMixin.db = db
 
-#OPERATIONS for ROOMS
+#get all urls for all operations
+@app.route("/",methods=["GET"])
+def get_all_urls():
 
+    result = {
+            "post_for_student" : "/students",
+            "get_all_students" : "/students",
+            "get_student_by_id" : "/students/<id>",
+            "update_student_by_id" :"/students/<id>",
+            "delete_student_by_id" : "/students/<id>",
+            "add_room" : "/rooms",
+            "get_all_rooms" : "/rooms",
+            "get_room_by_id" : "/rooms/<id>",
+            "update_room_by_id" : "/rooms/<id>",
+            "delete_room_by_id" : "/rooms/<id>",
+            "get_students_by_roomid" : "/roomwisestudent"
+            }
+    return {"All Requests":result}
+
+#OPERATIONS for ROOMS
 @app.route("/rooms",methods=["POST"])
 def create_room():
     if request.method == 'POST':
