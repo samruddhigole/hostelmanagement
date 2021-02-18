@@ -50,6 +50,27 @@ def get_room_by_id(id):
                 }
     return {"result":result}
 
+@app.route("/rooms/<int:id>",methods=["PUT"])
+def update_room_byid(id):
+
+    room = Rooms.query.get_or_404(id)
+    rooms = request.get_json()
+    if 'capacity' in rooms:
+        room.capacity = rooms['capacity']
+    db.session.add(room)
+    db.session.commit()
+    return {"result":"Room is updated"}
+
+
+@app.route("/rooms/<int:id>",methods=["DELETE"])
+def delete_room_by_id(id):
+
+    room = Rooms.query.get_or_404(id)
+    db.session.delete(room)
+    db.session.commit()
+    return {"result":"Record deleted successfully"}
+
+
 #OPERATIONS for STUDENTS
 
 @app.route("/students",methods=["POST"])
@@ -112,6 +133,26 @@ def get_student_by_id(id):
             "roomid":student.roomid
             }
     return {"result":result},200
+
+@app.route("/students/<int:id>",methods=["PUT"])
+def update_student_byid(id):
+
+    student = Students.query.get_or_404(id)
+    students = request.get_json()
+    student.studname = students["studname"]
+    student.roomid = students["roomid"]
+    db.session.add(student)
+    db.session.commit()
+    return {"result":"Student record is updated successfully"}, 200
+
+@app.route("/students/<int:id>",methods=["DELETE"])
+def delete_student_by_id(id):
+
+    student = Students.query.get_or_404(id)
+    update_room_data(student.roomid,"delete")
+    db.session.delete(student)
+    db.session.commit()
+    return {"result":"Student Deleted successfully"} , 200
 
 
 class Rooms(FlaskSerializeMixin,db.Model):
