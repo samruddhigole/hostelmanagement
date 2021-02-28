@@ -29,17 +29,17 @@ RUN pip3 install SQLAlchemy==1.3.22
 RUN pip3 install Werkzeug==1.0.1
 RUN apt install -y vim
 #RUN echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/10/main/pg_hba.conf
-#RUN service postgresql restart
-COPY . /todo
-WORKDIR /todo
+RUN service postgresql restart
+COPY . /hostelmanagement
+WORKDIR /hostelmanagement
 
 #RUN python3 get-pip.py.1
 
-#RUN pip3 install -r requirement.txt
+RUN pip3 install -r requirement.txt
 
-#RUN /todo/install.sh
+#RUN install.sh
 
 
-ENTRYPOINT service postgresql restart && bash -c "/hostelmanagement/install.sh" && bash -c "python3 hostel_app.py"
+ENTRYPOINT service postgresql restart && bash -c "./install.sh" && bash -c "python3 app.py"
 
 #CMD ["python3", "app_v2.py"]

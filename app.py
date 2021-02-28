@@ -27,7 +27,8 @@ def get_all_urls():
             "get_room_by_id" : "/rooms/<id>",
             "update_room_by_id" : "/rooms/<id>",
             "delete_room_by_id" : "/rooms/<id>",
-            "get_students_by_roomid" : "/roomwisestudent"
+            "get_students_by_roomid" : "/roomwisestudent",
+            "get_rooms_free_allocation":"/rooms/freeallocation"
             }
     return {"All Requests":result}
 
@@ -131,14 +132,10 @@ def add_student():
 def update_room_data(id,operation):
     room=Rooms.query.get_or_404(id)
     if operation == "add":
-        print("B",room.studentcount)
         room.studentcount+=1
-        print("A",room.studentcount)
 
     if operation == "delete":
-        print("B",room.studentcount)
         room.studentcount-=1
-        print("A",room.studentcount)
     db.session.add(room)
     db.session.commit()
 
@@ -168,7 +165,7 @@ def get_student_by_id(id):
     return {"result":result},200
 
 #get students detail using room id
-@app.route("/roomwisestudent/<int:id>")
+@app.route("/roomwisestudent/<int:id>",methods=["GET"])
 def get_student_byroom_id(id):
     room = Rooms.query.get_or_404(id)
     students = Students.query.all()
@@ -181,7 +178,7 @@ def get_student_byroom_id(id):
                     "studentname":student.studname,
                     "roomid":student.roomid
                     })
-    return {"result":result}
+    return {"result":result},200
 
 @app.route("/students/<int:id>",methods=["PUT"])
 def update_student_byid(id):
@@ -237,4 +234,4 @@ db.create_all()
 db.session.commit()
 
 if __name__ == "__main__":
-    app.run(debug=True,host='0.0.0.0',port=8080)
+    app.run(debug=True,host='0.0.0.0',port=8000)
