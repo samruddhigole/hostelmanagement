@@ -1,0 +1,60 @@
+<html>
+    <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+
+    <script>
+
+function createStudent(){
+
+    var studname=document.getElementById("studname").value;
+    var roomid=document.getElementById("roomid").value;
+    var student={"studname":studname,"roomid":roomid}
+     $.ajax('/student', {
+        type: 'POST',  // http method
+        data: JSON.stringify(student),
+        contentType: "application/json",
+        success: function (data, status, xhr) {
+            location.reload()
+            window.location.replace("/students")
+        },                              
+        error: function (jqXhr, textStatus, errorThrown) {
+            alert ("Error "+jqXhr.responseText)
+        }
+     });
+}
+function addstudent(){
+    window.location.replace("/addstudent")
+}
+function addroom(){
+    window.location.replace("/addroom")
+}
+function allroom(){
+    window.location.replace("/rooms")
+}
+function allstudent(){
+    window.location.replace("/students")
+}
+</script>
+   </head>
+   <body>
+    <button type="submit" onClick="addstudent()">Add student</button>
+    <button type="submit" onClick="addroom()">Add room</button>
+    <button type="submit" onClick="allroom()">All rooms</button>
+    <button type="submit" onClick="allstudent()">All Students</button>
+    
+    <p> Student Name <input  id="studname" type="text" /> </p>
+    <p> Room ID 
+            <select id="roomid">                                              
+                    <option value="0">Rooms ID</option> 
+                    {% for row in roomslist %}
+                    <option value="{{ row.id }}">{{ row.id }}</option> 
+                    {% endfor %}
+                </select>
+    </p>
+    <button type="submit" onClick="createStudent()">Submit</button>
+</form>
+</html>
+

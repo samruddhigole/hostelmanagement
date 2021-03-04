@@ -1,0 +1,76 @@
+
+<!doctype html>
+
+<html>
+   <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+    
+
+<script>
+
+function deleteStudent(id){
+ console.log(id)
+     $.ajax('/students/'+id, {
+        type: 'DELETE',  // http method
+        success: function (data, status, xhr) {
+            location.reload()
+            console.log(status)
+            console.log(data)
+                                     },
+        error: function (jqXhr, textStatus, errorMessage) {
+            console.log(errorMessage)
+                                             }
+     });
+}
+
+function editStudent(id){
+    window.location.replace("/students/"+id)
+
+}
+
+function addstudent(){
+
+    window.location.replace("/addstudent")
+}
+function addroom(){
+
+    window.location.replace("/addroom")
+}
+
+function allroom(){
+
+    window.location.replace("/rooms")
+}
+</script>
+   </head>
+   <body>
+    <button type="submit" onClick="addstudent()">Add student</button>
+    <button type="submit" onClick="addroom()">Add room</button>
+    <button type="submit" onClick="allroom()">All rooms</button>
+  <table border = 1>
+    <th> Student Id</th>
+    <th> Student Name</th>
+    <th> Room Id </th>
+    <th> Edit </th>
+    <th> Delete </th>
+
+    {% for key in result %}
+        <tr>
+            {% for row,value in key.items() %}
+                <td> {{ value }} </td>
+            {% endfor %}
+            
+            <td>
+                <button type="submit" onClick="editStudent({{key.id}})">Details/Edit</button>
+            </td>
+            <td>
+                <button type="submit" onClick="deleteStudent({{key.id}})">Delete</button>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+   </body>
+</html>

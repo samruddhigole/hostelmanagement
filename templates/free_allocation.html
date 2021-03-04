@@ -1,0 +1,43 @@
+<html>
+<head>
+<script>  
+function allstudent(){
+
+    window.location.replace("/students")
+}
+function addstudent(){
+
+    window.location.replace("/addstudent")
+}
+function addroom(){
+
+    window.location.replace("/addroom")
+}
+function allroom(){
+
+    window.location.replace("/rooms")
+}
+</script>
+
+   </head>
+   <body>
+    <button type="submit" onClick="allstudent()">All student</button>
+    <button type="submit" onClick="addstudent()">Add Student</button>
+    <button type="submit" onClick="addroom()">Add room</button>
+    <button type="submit" onClick="allroom()">All rooms</button>
+<table border = 1>
+    <th> Room Id</th>
+    <th> Room Capacity </th>
+    <th> Free Allocation </th>
+    {% for key in result %}
+        <tr>
+            {% for row,value in key.items() %}
+                <td> {{ value }} </td>
+           {% endfor %}
+        </tr>
+    {% endfor %}
+</table>
+
+   </body>
+
+</html>

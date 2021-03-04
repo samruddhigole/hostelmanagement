@@ -1,0 +1,59 @@
+<html>
+   <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+
+<script>
+
+function editRoom(){
+
+    var id=document.getElementById("id").value;
+    var studentcount=document.getElementById("studentcount").value;
+    var capacity=document.getElementById("capacity").value;
+    var room={"studentcount":studentcount , "capacity":capacity}
+     $.ajax('/rooms/'+id, {
+        type: 'PUT',  // http method
+        data: JSON.stringify(room),
+        contentType: "application/json",
+        success: function (data, status, xhr) {
+            location.reload()
+            window.location.replace("/rooms")
+        },                              
+        error: function (jqXhr, textStatus, errorMessage) {
+            alert(jqXhr.responseText)
+        }
+     });
+}
+
+function listRooms(){
+    window.location.replace("/rooms")
+}
+
+function allstudent(){
+
+    window.location.replace("/students")
+}
+function allroom(){
+
+    window.location.replace("/rooms")
+}
+
+</script>
+
+   </head>
+            <button type="submit" onClick="allroom()">All Rooms</button>
+            <button type="submit" onClick="allstudent()">All Students</button>
+   <body>
+       
+            {% for key,value in result.items() %}
+             {% if key == "capacity" %}
+             <p> {{ key }} <input id="{{ key }}" type="text"  value="{{ value }}" /></p> 
+             {% else %}
+               <p> {{ key }} <input  id="{{ key }}" type="text"  value="{{ value }}" readonly/> (not editable here)</p>
+             {% endif %}
+
+            {% endfor %}
+            <button type="submit" onClick="editRoom()">Edit</button>
+   </body>

@@ -1,0 +1,105 @@
+<html>
+   <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+<script>
+
+function editStudent(){
+
+    var id=document.getElementById("id").value;
+    var studname=document.getElementById("studname").value;
+    var roomid=document.getElementById("roomid1").value;
+    console.log(roomid)
+    var student={"studname":studname, "roomid":roomid}
+     $.ajax('/students/'+id, {
+        type: 'PUT',  // http method
+        data: JSON.stringify(student),
+        contentType: "application/json",
+        success: function (data, status, xhr) {
+            location.reload()
+            window.location.replace("/students")
+        },                              
+        error: function (jqXhr, textStatus, errorMessage) {
+            alert ("Error "+jqXhr.responseText)
+        }
+     });
+}
+
+function allstudent(){
+
+    window.location.replace("/students")
+}
+function addroom(){
+
+    window.location.replace("/addroom")
+}
+function allroom(){
+
+    window.location.replace("/rooms")
+}
+function addstudent(){
+
+    window.location.replace("/addstudent")
+}
+</script>
+
+   </head>
+    <button type="submit" onClick="allstudent()">All student</button>
+    <button type="submit" onClick="addroom()">Add room</button>
+    <button type="submit" onClick="addstudent()">Add Student</button>
+    <button type="submit" onClick="allroom()">All rooms</button>
+   <body>
+
+            <!--{% for row,value in result.items() %}
+                {% if row == "roomid" %}
+                {% set existingid = value %}
+                <p>{{ existingid }} <input id="{{ existingid }}" type="text" value="{{ existingid }}"</p>
+                {% endif %}
+                {% endfor %}-->
+
+            {% for row,value in result.items() %}
+                {% if row != "roomid" %}                
+                    {% if row != "id" %}
+                        <p> {{ row }} <input id="{{ row }}" type="text"  value="{{ value }}" /></p> 
+                    {% else %}
+                    <p> {{ row }} <input  id="{{ row }}" type="text"  value="{{ value }}" readonly/> (not editable here)</p>
+                    {% endif %}
+                {% endif %}
+
+            {% endfor %}
+                   
+            <p> Room Id
+            <select id="roomid1">                                              
+            {% for row,value in result.items() %}
+                    {% if row == "roomid" %}
+                        {% set existingid = value %}
+                        <option value="0">{{ existingid }}</option> 
+                    {% endif %}
+            {% endfor %}
+
+                    {% for row in roomslist %}
+                    <option value="{{ row.id }}">{{ row.id }}</option> 
+                    {% endfor %}
+                </select>
+            </p>
+                
+
+            <button type="submit" onClick="editStudent()">Update</button>
+            <table border = 1>
+              <th> Room Id</th>
+              <th> Current Student count</th>
+              <th> Room Capacity </th>
+              {% for key in allrooms %}
+                  <tr>
+                      {% for row,value in key.items() %}
+                          <td> {{ value }} </td>
+                      {% endfor %}
+                  </tr>
+              {% endfor %}
+            </table>
+           
+
+
+   </body>

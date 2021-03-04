@@ -1,0 +1,86 @@
+<!doctype html>
+
+<html>
+   <head>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"
+        integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+        crossorigin="anonymous">
+    </script>
+    
+
+<script>
+
+function deleteRoom(id){
+ console.log(id)
+     $.ajax('/rooms/'+id, {
+        type: 'DELETE',  // http method
+        success: function (data, status, xhr) {
+            location.reload()
+            console.log(status)
+            console.log(data)
+                                     },
+        error: function (jqXhr, textStatus, errorMessage) {
+            console.log(errorMessage)
+            alert(jqXhr.responseText)
+                                             }
+     });
+}
+
+function editRoom(id){
+    window.location.replace("/rooms/"+id)
+}
+
+function allstudent(){
+
+    window.location.replace("/students")
+}
+function addstudent(){
+
+    window.location.replace("/addstudent")
+}
+function addroom(){
+
+    window.location.replace("/addroom")
+}
+function studentList(id){
+
+    window.location.replace("/roomwisestudent/"+id)
+}
+function roomfreeallocation(){
+
+    window.location.replace("/rooms/freeallocation")
+}
+</script>
+
+   </head>
+   <body>
+    <button type="submit" onClick="allstudent()">All student</button>
+    <button type="submit" onClick="addstudent()">Add Student</button>
+    <button type="submit" onClick="addroom()">Add room</button>
+    <button type="submit" onClick="roomfreeallocation()">Room vacancies</button>
+  <table border = 1>
+    <th> Room Id</th>
+    <th> Current Student count</th>
+    <th> Room Capacity </th>
+    <th> Edit </th>
+    <th> Delete </th>
+    <th> List of Students </th>
+    {% for key in result %}
+        <tr>
+            {% for row,value in key.items() %}
+                <td> {{ value }} </td>
+           {% endfor %}
+            <td>
+                <button type="submit" onClick="editRoom({{key.id}})">Details/Edit</button>
+            </td>
+            <td>
+                <button type="submit" onClick="deleteRoom({{key.id}})">Delete</button>
+            </td>
+            <td>
+                <button type="submit" onClick="studentList({{key.id}})">List of Students</button>
+            </td>
+        </tr>
+    {% endfor %}
+</table>
+   </body>
+</html>
